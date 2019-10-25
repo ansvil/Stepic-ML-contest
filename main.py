@@ -22,6 +22,7 @@ submission_status
 user_id
 
 """
+"""
 #task1: find course mentor id
 #find who was the first one to solve some step
 #picking the first step mentioned
@@ -34,5 +35,13 @@ mentor=d.loc[(d['date']==time)].user_id
 print(mentor)
 #find who got most correct submissions
 d=submissions_data[submissions_data.submission_status == 'correct'].groupby('user_id').agg({'submission_status': 'count'}).sort_values(by=['submission_status'], ascending=False)
-
 print(d)
+"""
+
+#task2: find the hardest assignment
+max_step=submissions_data.groupby('user_id').agg({'timestamp':'max'})
+#ubmissions_data.set_index('user_id')
+d = pd.merge(submissions_data, max_step, on='user_id', suffixes=['','_max'])
+print(d.loc[(d.submission_status == 'wrong') & ( d.timestamp==d.timestamp_max)]
+      .groupby('step_id').agg({'timestamp':'count'}).
+      sort_values(by=['timestamp'], ascending=False))
